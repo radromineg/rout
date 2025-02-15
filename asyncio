@@ -1,0 +1,18 @@
+# 示例 9: 异步任务并发执行示例
+import asyncio
+import random
+
+async def task(name, delay):
+    print(f"任务 {name} 开始，等待 {delay:.2f} 秒.")
+    await asyncio.sleep(delay)
+    print(f"任务 {name} 完成.")
+    return name
+
+async def main():
+    delays = [random.uniform(0.5, 2.0) for _ in range(5)]
+    tasks = [asyncio.create_task(task(f"Task{i+1}", delay)) for i, delay in enumerate(delays)]
+    results = await asyncio.gather(*tasks)
+    print("所有任务完成:", results)
+
+if __name__ == '__main__':
+    asyncio.run(main())
