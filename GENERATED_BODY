@@ -1,0 +1,27 @@
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "HitActor.generated.h"
+
+UCLASS()
+class YOURPROJECTNAME_API AHitActor : public AActor
+{
+    GENERATED_BODY()
+    
+public:    
+    AHitActor();
+
+protected:
+    virtual void BeginPlay() override;
+
+public:    
+    virtual void Tick(float DeltaTime) override;
+
+    UPROPERTY(VisibleAnywhere, Category = "Components")
+    class UStaticMeshComponent* MeshComp;
+
+    UFUNCTION()
+    void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
+               UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+};
