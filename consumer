@@ -1,0 +1,38 @@
+import threading
+import queue
+import time
+import random
+
+def producer(q, id):
+    for i in range(10):
+        item = f'Item-{id}-{i}'
+        q.put(item)
+        print(f"Producer {id} produced {item}")
+        time.sleep(random.uniform(0.1, 0.5))
+
+def consumer(q, id):
+    while True:
+        try:
+            item = q.get(timeout=3)
+            print(f"Consumer {id} consumed {item}")
+            q.task_done()
+            time.sleep(random.uniform(0.2, 0.6))
+        except queue.Empty:
+            print(f"Consumer {id} timeout, exiting.")
+            break
+
+if __name__ == '__main__':
+    q = queue.Queue(maxsize=5)
+    producers = [threading.Thread(target=producer, args=(q, i)) for i in range(2)]
+    consumers = [threading.Thread(target=consumer, args=(q, i)) for i in range(2)]
+    
+    for p in producers:
+        p.start()
+    for c in consumers:
+        c.start()
+    
+    for p in producers:
+        p.join()
+    q.join()  # 等待队列清空
+    for c in consumers:
+        c.join()
