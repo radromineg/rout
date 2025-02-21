@@ -1,0 +1,27 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program {
+    static void Main() {
+        List<Person> people = new List<Person> {
+            new Person { Name = "张三", Age = 25 },
+            new Person { Name = "李四", Age = 30 },
+            new Person { Name = "王五", Age = 20 },
+            new Person { Name = "赵六", Age = 35 }
+        };
+
+        var filtered = people.Where(p => p.Age >= 25)
+                             .OrderBy(p => p.Age)
+                             .Select(p => new { p.Name, p.Age });
+
+        foreach (var person in filtered) {
+            Console.WriteLine($"{person.Name} - {person.Age}");
+        }
+    }
+}
+
+class Person {
+    public string Name { get; set; }
+    public int Age { get; set; }
+}
