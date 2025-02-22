@@ -1,0 +1,34 @@
+import threading
+import queue
+import time
+
+# 工作线程函数
+def worker(q):
+    while True:
+        item = q.get()
+        if item is None:
+            break
+        print(f"处理项目: {item}")
+        time.sleep(1)
+        q.task_done()
+
+# 创建队列和线程池
+q = queue.Queue()
+threads = []
+for i in range(3):
+    t = threading.Thread(target=worker, args=(q,))
+    t.start()
+    threads.append(t)
+
+# 向队列中添加项目
+for item in range(10):
+    q.put(item)
+
+# 等待所有项目被处理
+q.join()
+
+# 停止工作线程
+for i in range(3):
+    q.put(None)
+for t in threads:
+    t.join()
