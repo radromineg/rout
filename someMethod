@@ -1,0 +1,3 @@
+const contractAddress = '0xDeployedContractAddress';
+const contract = new web3.eth.Contract(compiledContract.abi, contractAddress);
+contract.methods.someMethod().call().then(console.log);
