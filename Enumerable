@@ -1,0 +1,12 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+
+class Program {
+    static async Task Main(string[] args) {
+        List<int> numbers = Enumerable.Range(1, 10).ToList();
+        var squaredNumbers = await Task.Run(() => numbers.Select(x => x * x).ToList());
+        Console.WriteLine(string.Join(", ", squaredNumbers));
+    }
+}
