@@ -1,0 +1,28 @@
+import akka.actor.{Actor, ActorSystem, Props}
+
+// 定义消息
+case class Greet(name: String)
+case class Greeted(message: String)
+
+// 定义 Actor
+class Greeter extends Actor {
+  def receive = {
+    case Greet(name) =>
+      println(s"Hello, $name!")
+      sender() ! Greeted(s"Greetings, $name!")
+  }
+}
+
+object AkkaExample extends App {
+  // 创建 ActorSystem
+  val system = ActorSystem("HelloSystem")
+  // 创建 Greeter Actor
+  val greeter = system.actorOf(Props[Greeter], name = "greeter")
+  
+  // 发送消息
+  greeter ! Greet("Scala")
+  
+  // 等待一段时间后关闭系统
+  Thread.sleep(1000)
+  system.terminate()
+}
