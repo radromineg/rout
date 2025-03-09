@@ -1,0 +1,31 @@
+import threading
+import requests
+from bs4 import BeautifulSoup
+
+def fetch_url(url):
+    try:
+        response = requests.get(url, timeout=5)
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text, 'html.parser')
+            title = soup.title.string if soup.title else 'No title'
+            print(f"{url} 的标题是: {title}")
+        else:
+            print(f"{url} 返回状态码: {response.status_code}")
+    except Exception as e:
+        print(f"{url} 请求失败: {e}")
+
+urls = [
+    "https://www.python.org",
+    "https://www.wikipedia.org",
+    "https://www.github.com",
+    "https://www.stackoverflow.com",
+]
+
+threads = []
+for url in urls:
+    t = threading.Thread(target=fetch_url, args=(url,))
+    t.start()
+    threads.append(t)
+
+for t in threads:
+    t.join()
