@@ -1,0 +1,21 @@
+use std::thread;
+use std::sync::mpsc;
+use std::time::Duration;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    // 启动生产者线程
+    thread::spawn(move || {
+        let messages = vec!["消息1", "消息2", "消息3"];
+        for msg in messages {
+            tx.send(msg).unwrap();
+            thread::sleep(Duration::from_millis(500));
+        }
+    });
+
+    // 主线程作为消费者
+    for received in rx {
+        println!("收到: {}", received);
+    }
+}
