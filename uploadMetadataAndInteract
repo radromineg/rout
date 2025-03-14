@@ -1,0 +1,32 @@
+const IPFS = require('ipfs-http-client');
+const ipfs = IPFS.create({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
+const Web3 = require('web3');
+const web3 = new Web3('https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID');
+
+async function uploadMetadataAndInteract(metadata, contract, fromAddress, privateKey) {
+    // 上传 metadata JSON 到 IPFS
+    const { cid } = await ipfs.add(JSON.stringify(metadata));
+    console.log('IPFS CID:', cid.toString());
+    
+    // 使用 IPFS 返回的 CID 生成 tokenURI
+    const tokenURI = `https://ipfs.io/ipfs/${cid.toString()}`;
+    const tx = contract.methods.mintNFT(fromAddress, tokenURI);
+    const gas = await tx.estimateGas({ from: fromAddress });
+    const gasPrice = await web3.eth.getGasPrice();
+    const data = tx.encodeABI();
+    const nonce = await web3.eth.getTransactionCount(fromAddress);
+
+    const signedTx = await web3.eth.accounts.signTransaction({
+        to: contract.options.address,
+        data,
+        gas,
+        gasPrice,
+        nonce
+    }, privateKey);
+    
+    const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+    console.log('NFT Minted, receipt:', receipt);
+}
+
+// 示例调用：确保 nftContract 为已实例化的合约对象
+// uploadMetadataAndInteract({name: "My NFT", description: "An advanced NFT", image: "ipfs_link"}, nftContract, '0xYourAddress', 'your_private_key');
