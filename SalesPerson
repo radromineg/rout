@@ -1,0 +1,14 @@
+WITH SalesCTE AS (
+    SELECT 
+        SalesPerson,
+        SaleAmount,
+        ROW_NUMBER() OVER (PARTITION BY SalesPerson ORDER BY SaleDate) AS rn
+    FROM Sales
+)
+SELECT 
+    SalesPerson,
+    SaleAmount,
+    rn,
+    SUM(SaleAmount) OVER (PARTITION BY SalesPerson ORDER BY rn 
+        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS RunningTotal
+FROM SalesCTE;
