@@ -1,0 +1,9 @@
+import plotly.graph_objs as go
+import pandas as pd
+
+df = pd.DataFrame({'x': range(10), 'y': [2**n for n in range(10)]})
+
+fig = go.Figure()
+fig.add_trace(go.Scatter(x=df['x'], y=df['y'], mode='lines+markers', name='Exponential'))
+fig.update_layout(title='Exponential Growth', xaxis_title='X', yaxis_title='2^X')
+fig.show()
