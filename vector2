@@ -1,0 +1,28 @@
+#include <iostream>
+#include <memory>
+#include <vector>
+
+class Base {
+public:
+    virtual void speak() const = 0;
+    virtual ~Base() {}
+};
+
+template<typename T>
+class Derived : public Base {
+public:
+    void speak() const override {
+        std::cout << "Derived of type: " << typeid(T).name() << std::endl;
+    }
+};
+
+int main() {
+    std::vector<std::unique_ptr<Base>> objects;
+    objects.emplace_back(std::make_unique<Derived<int>>());
+    objects.emplace_back(std::make_unique<Derived<double>>());
+    objects.emplace_back(std::make_unique<Derived<std::string>>());
+
+    for (const auto& obj : objects) {
+        obj->speak();
+    }
+}
